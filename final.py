@@ -44,21 +44,6 @@ def off(signal, frame):
 signal.signal(signal.SIGINT, off)
 
 # **************************************************
-# ACTUATOR INSTRUCTIONS
-# **************************************************
-# Actuators hold down for the duration of the procedure
-# **************************************************
-
-def actuate():
-    print "holding down"
-	GPIO.output(ActuatorPin, GPIO.HIGH)
-
-    sleep(3)
-
-    print "letting go"
-	GPIO.output(ActuatorPin, GPIO.LOW)
-
-# **************************************************
 # SOLENOID INSTRUCTIONS
 # **************************************************
 # Solenoids push for 3 seconds then retract
@@ -74,7 +59,24 @@ def push():
 	GPIO.output(SolenoidPin, GPIO.LOW)
 
 # **************************************************
+# ACTUATOR INSTRUCTIONS
+# **************************************************
+# Actuators hold down for the duration of the procedure
+# **************************************************
+
+def actuate():
+    print "holding down"
+	GPIO.output(ActuatorPin, GPIO.HIGH)
+
+    sleep(3)
+
+    print "letting go"
+	GPIO.output(ActuatorPin, GPIO.LOW)
+
+# **************************************************
 # X-AXIS SENSOR
+# **************************************************
+# Use ultrasonic sensor to measure distance from sensor to plate
 # **************************************************
 
 GPIO.setup(x_pinTrigger, GPIO.OUT)
@@ -104,7 +106,6 @@ def x_distance():
 # **************************************************
 # PROCEDURE
 # **************************************************
-
 """
 PSEUDOCODE FOR PROCEDURE
     1. Run x y distance sensor loop
@@ -114,6 +115,7 @@ PSEUDOCODE FOR PROCEDURE
     5. Run loop again if x > 3cm & y > 3cm, push and check again
     6. If x y distance < 3cm end procedure
 """
+# **************************************************
 
 def run():
     print "Setting up"
@@ -125,27 +127,28 @@ def run():
 
     sleep(2)
 
-    print "Procedure start"
+    while True:
+        print "Procedure start"
 
-    while (x_distance() > 8.0):
-        print("\nPlate is not ready")
-        sleep(1)
+        while (x_distance() > 6.0):
+            print("\nPlate is not ready")
+            sleep(1)
 
-    push()
-
-    while (x_distance() > 5.0):
-        print("\nPlate is not aligned... Enter push procedure again")
-        sleep(1)
         push()
+        sleep(1)
 
-    print "\nSUCCESS..."
-    print ("Final X Distance: %.1f cm" % x_distance())
-    print "Ending alignment procedure\n"
+        while (x_distance() > 4.0):
+            print("\nPlate is not aligned... Enter push procedure again")
+            sleep(1)
+            push()
 
-    sleep(2)
+        print "\nSUCCESS..."
+        print ("Final X Distance: %.1f cm" % x_distance())
+        print "Ending alignment procedure\n"
 
-    actuate()
+        sleep(1)
 
-    GPIO.cleanup()
+        print "\nStarting \n"
+        actuate()
 
 run()
