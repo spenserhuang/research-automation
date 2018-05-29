@@ -142,6 +142,7 @@ PSEUDOCODE FOR PROCEDURE
 # **************************************************
 
 def run():
+    # Put solenoids and actuators into off position
     print "Setting up"
     GPIO.setup(SolenoidPin,GPIO.OUT)
     GPIO.output(SolenoidPin, GPIO.LOW)
@@ -151,29 +152,35 @@ def run():
 
     sleep(2)
 
+    # Main operation loop
     while True:
         print "Procedure start\n"
 
         GPIO.output(SolenoidPin, GPIO.LOW)
         GPIO.output(ActuatorPin, GPIO.LOW)
 
+        # Wait for plate to enter 6cm distance
         while (x_distance() > 6.0):
             print("Plate is not ready\n")
             sleep(2)
 
+        # When plate is under 6cm distance, push the plate
         push()
 
+        # If the plate is between 4-6cm distance, the plate is not aligned so keep pushing it
         while (x_distance() > 4.0):
             print("Plate is not aligned... Enter push procedure again\n")
             push()
 
         print "Now starting push & actuate procedure\n"
 
+        # Push the plate and hold it down
         pushAndActuate()
 
         print "Procedure complete. Please remove the plate.\n"
 
-        while (x_distance() < 5.0):
+        # Wait for the plate to be removed. If nothing is there after 10 seconds, then the item has been removed
+        while (x_distance() < 6.0):
             print("Please remove the plate\n")
             sleep(10)
 
