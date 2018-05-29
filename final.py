@@ -50,13 +50,15 @@ signal.signal(signal.SIGINT, off)
 # **************************************************
 
 def push():
-    print "pushing forward"
+    sleep(2)
+    print "Pushing forward\n"
 	GPIO.output(SolenoidPin, GPIO.HIGH)
 
     sleep(3)
 
-    print "pulling back"
+    print "Pulling back\n"
 	GPIO.output(SolenoidPin, GPIO.LOW)
+    sleep(2)
 
 # **************************************************
 # ACTUATOR INSTRUCTIONS
@@ -65,13 +67,35 @@ def push():
 # **************************************************
 
 def actuate():
-    print "holding down"
+    sleep(2)
+    print "Holding down\n"
 	GPIO.output(ActuatorPin, GPIO.HIGH)
 
     sleep(3)
 
-    print "letting go"
+    print "Letting go\n"
 	GPIO.output(ActuatorPin, GPIO.LOW)
+    sleep(2)
+
+# **************************************************
+# PUSH & ACTUATE
+# **************************************************
+# Push the solenoids and while on high, actuate the pistons
+# **************************************************
+
+def pushAndActuate():
+    print "Pushing solenoids\n"
+	GPIO.output(SolenoidPin, GPIO.HIGH)
+    sleep(2)
+    print "Actuating pistons\n"
+	GPIO.output(ActuatorPin, GPIO.HIGH)
+    sleep(2)
+    print "Retracting solenoids\n"
+	GPIO.output(SolenoidPin, GPIO.LOW)
+    sleep(8)
+    print "Retracting pistons\n"
+	GPIO.output(ActuatorPin, GPIO.LOW)
+    sleep(2)
 
 # **************************************************
 # X-AXIS SENSOR
@@ -128,27 +152,29 @@ def run():
     sleep(2)
 
     while True:
-        print "Procedure start"
+        print "Procedure start\n"
+
+        GPIO.output(SolenoidPin, GPIO.LOW)
+        GPIO.output(ActuatorPin, GPIO.LOW)
 
         while (x_distance() > 6.0):
-            print("\nPlate is not ready")
-            sleep(1)
+            print("Plate is not ready\n")
+            sleep(2)
 
         push()
-        sleep(1)
 
         while (x_distance() > 4.0):
-            print("\nPlate is not aligned... Enter push procedure again")
-            sleep(1)
+            print("Plate is not aligned... Enter push procedure again\n")
             push()
 
-        print "\nSUCCESS..."
-        print ("Final X Distance: %.1f cm" % x_distance())
-        print "Ending alignment procedure\n"
+        print "Now starting push & actuate procedure\n"
 
-        sleep(1)
+        pushAndActuate()
 
-        print "\nStarting \n"
-        actuate()
+        print "Procedure complete. Please remove the plate.\n"
+
+        while (x_distance() < 5.0):
+            print("Please remove the plate\n")
+            sleep(10)
 
 run()
