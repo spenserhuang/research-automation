@@ -2,6 +2,8 @@
 
 <br />To start the program, use terminal on the Raspberry Pi to move to the directory containing the `final.py` file and run the following code: `sudo python final.py`
 
+<br />To end the program, hit CTRL and C
+
 <br />This is the code portion for the research automation project by Dr. John Finan. For a full report on his work, visit https://www.jove.com/pdf/57305/jove-protocol-57305-method-for-high-speed-stretch-injury-human-induced-pluripotent-stem
 
 <br />See `final.py` for final code & code explanation
