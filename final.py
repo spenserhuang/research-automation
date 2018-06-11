@@ -37,7 +37,7 @@ x_pinEcho = 15
 # **************************************************
 
 def off(signal, frame):
-    print("\nTurning off ultrasonic distance sensors...\n Alignment complete...")
+    print("\nTurning off system\n")
     GPIO.cleanup()
     sys.exit(0)
 
@@ -89,10 +89,10 @@ def pushAndActuate():
     sleep(2)
     print "Actuating pistons\n"
 	GPIO.output(ActuatorPin, GPIO.HIGH)
-    sleep(2)
+    sleep(10)
     print "Retracting solenoids\n"
 	GPIO.output(SolenoidPin, GPIO.LOW)
-    sleep(8)
+    sleep(10)
     print "Retracting pistons\n"
 	GPIO.output(ActuatorPin, GPIO.LOW)
     sleep(2)
@@ -150,7 +150,7 @@ def run():
     GPIO.setup(ActuatorPin,GPIO.OUT)
     GPIO.output(ActuatorPin, GPIO.LOW)
 
-    sleep(2)
+    sleep(5)
 
     # Main operation loop
     while True:
@@ -162,24 +162,16 @@ def run():
         # Wait for plate to enter 6cm distance
         while (x_distance() > 6.0):
             print("Plate is not ready\n")
-            sleep(2)
-
-        # When plate is under 6cm distance, push the plate
-        push()
-
-        # If the plate is between 4-6cm distance, the plate is not aligned so keep pushing it
-        while (x_distance() > 4.0):
-            print("Plate is not aligned... Enter push procedure again\n")
-            push()
-
-        print "Now starting push & actuate procedure\n"
+            sleep(1)
 
         # Push the plate and hold it down
+        sleep(3)
         pushAndActuate()
 
         print "Procedure complete. Please remove the plate.\n"
 
         # Wait for the plate to be removed. If nothing is there after 10 seconds, then the item has been removed
+        sleep(10)
         while (x_distance() < 6.0):
             print("Please remove the plate\n")
             sleep(10)
