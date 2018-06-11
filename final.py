@@ -44,40 +44,6 @@ def off(signal, frame):
 signal.signal(signal.SIGINT, off)
 
 # **************************************************
-# SOLENOID INSTRUCTIONS
-# **************************************************
-# Solenoids push for 3 seconds then retract
-# **************************************************
-
-def push():
-    sleep(2)
-    print "Pushing forward\n"
-	GPIO.output(SolenoidPin, GPIO.HIGH)
-
-    sleep(3)
-
-    print "Pulling back\n"
-	GPIO.output(SolenoidPin, GPIO.LOW)
-    sleep(2)
-
-# **************************************************
-# ACTUATOR INSTRUCTIONS
-# **************************************************
-# Actuators hold down for the duration of the procedure
-# **************************************************
-
-def actuate():
-    sleep(2)
-    print "Holding down\n"
-	GPIO.output(ActuatorPin, GPIO.HIGH)
-
-    sleep(3)
-
-    print "Letting go\n"
-	GPIO.output(ActuatorPin, GPIO.LOW)
-    sleep(2)
-
-# **************************************************
 # PUSH & ACTUATE
 # **************************************************
 # Push the solenoids and while on high, actuate the pistons
@@ -132,12 +98,14 @@ def x_distance():
 # **************************************************
 """
 PSEUDOCODE FOR PROCEDURE
-    1. Run x y distance sensor loop
-    2. Break loop when x < 5cm & y < 5cm
-    3. Enter push procedure
-    4. Run x y distance sensor
-    5. Run loop again if x > 3cm & y > 3cm, push and check again
-    6. If x y distance < 3cm end procedure
+    - Start everything at off position
+    - Wait for 5 seconds
+    - Run x distance sensor loop
+    - Break loop when x < 6cm
+    - Enter pushAndActuate procedure
+    - Wait for 10 seconds
+    - Run plate removal loop
+    - Once loop breaks, go back to step 1
 """
 # **************************************************
 
